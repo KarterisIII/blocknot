@@ -1,0 +1,83 @@
+fieldset {
+	padding: 0;
+	margin-bottom: 10px;
+	font-family: RobotMedium;
+	border: 1px solid black;
+}
+fieldset:nth-last-child(1) {
+	margin-bottom: 0px;
+}
+.legend {
+	width: 85%;
+	border: 1px solid black;
+	text-align: center;
+	padding: 5px 0;
+	background-color: red;
+	color: white;
+}
+.edit-holder {
+	display: flex;
+	justify-content: space-around;
+	margin: 10px 0;		
+}
+.edit-box {
+	width: 185px;
+	margin: 0 5px;
+	display: flex;
+	flex-direction: column;
+	
+}
+.edit-label {
+	font-size: 16px;
+	margin: 5px 0;		
+}
+.edit-text {
+	border: none;
+	border-bottom: 1px solid black;
+	&:focus {
+		outline: none;
+	}
+}
+.edit-checkbox[type="checkbox"] {
+	display: none;
+}
+
+.edit-slider {		
+	height: 28px;
+	border:  1px solid black;
+	transition: all .5s ease;
+	position: relative;
+	box-sizing: border-box;
+}
+.edit-knob {
+	cursor: pointer;
+	position: absolute;
+	width: 50%;
+	height: 100%;
+	border:  2px solid rgb(255, 255, 255);
+	left: 0;
+	background-color: #ff0000;
+	transition: all .5s ease;
+	box-sizing: border-box;
+	&::after {
+		content: 'нет';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		-webkit-transform: translate(-50%, -50%);
+		transform: translate(-50%, -50%);
+	}
+}
+.edit-checkbox[type="checkbox"]:checked+.edit-slider {
+	background-color: #ff0000;
+	
+}
+.edit-checkbox[type="checkbox"]:checked+.edit-slider .edit-knob::after {		
+	content: 'да';
+	
+}
+.edit-checkbox[type="checkbox"]:checked+.edit-slider .edit-knob {
+	background-color: #ffffff;	
+	border:  1px solid #ff0000;
+	left: calc(100% - 50%);	
+}

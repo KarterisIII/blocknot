@@ -1,0 +1,16 @@
+.search {
+	width: 380px;
+	margin-left: auto;
+	margin-bottom: 10px;
+	&-box {			
+		display: flex;
+	}
+	input {
+		height: 36px;
+		font-size: 20px;
+		font-family: RobotMedium;
+		border-radius: 0;
+		border: 1px solid black;
+		outline: none;
+	}
+}

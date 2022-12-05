@@ -1,0 +1,26 @@
+.edit-work {
+	.content-main {
+		width: 300px;
+		.holder:nth-child(1) {
+			height: 60px;
+			input {
+				height: 40px;
+				font-size: 20px;
+				border-left: 2px solid #ccc;
+				border-right: 2px solid #ccc;
+				border-bottom: 2px solid #ccc;
+				&:focus {	
+					height: 40px;
+					font-size: 20px;			
+					outline: none;
+					border-left: 2px solid black;
+					border-right: 2px solid black;
+					border-bottom: 2px solid black;
+				}
+			}
+		}
+		.holder:nth-child(2) {
+			height: 100%;
+		}
+	}
+}

@@ -1,0 +1,52 @@
+.type-work {
+	width: 450px;
+	margin: 0 auto;
+	font-family: RobotMedium;
+	.header {
+		margin-bottom: 50px;
+	}
+	.title {
+		text-align: center;
+		font-family: RobotMedium;
+		padding: 20px;
+	}
+	.main {
+		width: 100%;
+		&-box {
+			margin: 0 auto 50px auto;
+			width: 350px;
+			text-align: center;			
+			.points {				
+				display: flex;
+				flex-direction: row-reverse;
+				justify-content: flex-start;
+				label {
+					background-color: red;
+					padding: 10px;
+					border: 1px solid black;
+					color: white;
+				}
+				input {					
+					width: 80px;
+					height: 40px;
+					font-size: 20px;
+					border: 1px solid black;
+					outline: none;
+				}
+			}
+		}
+	}
+	.footer {
+		margin-bottom: 20px;
+		&-box {
+			margin: 0 auto;
+			width: 350px;
+			display: flex;
+			justify-content: space-between;
+			
+			button {
+				width: 100px;
+			}
+		}
+	}
+}
