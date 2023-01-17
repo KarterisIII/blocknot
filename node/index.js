@@ -14,10 +14,6 @@ const PORT = process.env.PORT || 5000
 
 app.use(cors(corsOptions));
 
-// app.use(cors({
-// 	origin: 'http://185.99.154.132:3000', 
-// 	credentials: true
-// }))
 app.use(express.json())
 app.use(cookieParser())
 app.use('', router)
