@@ -59,12 +59,10 @@ export default class AuthService {
 		const passwordHash = await bcrypt.compare(password, user.password)
 		if(!passwordHash) {
 			throw ApiError.BadRequest('Неправельный пароль')
-		}
-		
+		}		
 		const userDto = new UserDto(user)
 		const tokens = tokenService.generateTokens({...userDto})
 		await tokenService.saveToken(userDto.id, tokens.refreshToken)
-
 		return {...tokens, user: userDto }
 	}
 	

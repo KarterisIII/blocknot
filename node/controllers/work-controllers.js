@@ -15,32 +15,27 @@ export default class WorkControllers {
 		} catch (error) {
 			next(error)
 		}
-	}
+	}	
 	async createWork(req, res, next) {
-		try {
-			
-			const {workName, comment, userId} = req.body
-			const {id} = req.user
+		try {			
+			const {workId, usersId, comment, optics, copper, workDone} = req.body
+			const {id} = req.user	
 						
 			const workData = await workService.createWork(				
-				workName,
-				comment,
-				id,
-				userId				
+				workId, usersId, comment, optics, copper, workDone, id								
 			)
-			return res.json({workData})
+			
+			return res.json({msg:`работа ${workData.workName} добавлена`})
 		} catch (error) {
 			next(error)
 		}
 	}
 	async updateWork(req, res, next) {
 		try {
-			const {workName, comment, id} = req.body	
-					
+			const {workId, usersId, comment, optics, copper, workDone} = req.body	
+				console.log(req.body)			
 			const work = await workService.updateWork(
-				id,
-				workName,
-				comment,				
+				workId, usersId, comment, optics, copper, workDone			
 			)
 			
 			return res.json({msg:`работа ${work.workName} обнавлена`})
@@ -50,10 +45,11 @@ export default class WorkControllers {
 	}
 	async deleteWork(req, res, next) {
 		try {
+			const {userId} = req.body
 			const {id} = req.params
-			console.log(req.params)
+			
 			const work = await workService.deleteWork(
-				id
+				id, userId
 			)
 			return res.json({msg: `Работа ${work.workName} удалена`})
 		} catch (error) {

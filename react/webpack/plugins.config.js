@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 const constants = require('./constants')
 const {	CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -28,7 +29,12 @@ const cssLoader = () => {
 const result = {}
 
 result.plugins = [
-	
+	new webpack.ProvidePlugin({
+		Buffer: ['buffer', 'Buffer'],
+	}),
+	new webpack.ProvidePlugin({
+		process: 'process/browser',
+	}),
 	new HtmlWebpackPlugin({
 			title: 'Online',
 			template: './src/index.html',
@@ -82,6 +88,12 @@ result.module = {
 				options: {
 					presets: ['@babel/preset-env', "@babel/preset-react", "@babel/preset-typescript"]
 				}
+			}
+		},
+		{
+			test: /\.m?js/,
+			resolve: {
+				fullySpecified: false
 			}
 		},
 		//Loading images

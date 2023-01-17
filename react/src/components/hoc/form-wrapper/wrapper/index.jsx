@@ -1,101 +1,43 @@
-import { useState } from 'react';
 import Modal from '../../../modal/Modal';
 import Form from '../form';
 import Message from './../massege/index';
-
- const initialState = {
-	error: '',
-	anser: '',
- }
+import { useAppDispatch, useAppSelector } from './../../../../hooks/hooks';
+import { inputCheckbox, inputText, inputObject } from '../../../../features/input/inputSlice';
+import { messageObj } from './../../../../features/message/messageSlice';
 
 const formWrapper = (View) => {
 	return (props) => {
-		const {active, functionData, title, handleClose, data} = props
-		const [value, setValue] = useState(data)
-		const [message, setMassege] = useState(initialState)
-
+		const {active, title, handleClose, functItem} = props
+		const dispatch = useAppDispatch()
+		const value = useAppSelector(inputObject)
+		const message = useAppSelector(messageObj)
 		const onChange = (e) => {
-			const {id, value} = e.target		
-			setValue(prevState => ({
-				...prevState,
-				[id]: value,
-			}))	
-			setMassege(prevState => ({
-				...prevState,
-				error: ''
-			}))			
-		}
+			const {id, value} = e.target
+			dispatch(inputText({id, value}))	
+		}		
 
 		const handleChange = (e) => {
-			const {id} = e.target 
-			setValue(prevState => ({
-				...prevState,
-				[id]: !value[id]
-			}));
-			setMassege(prevState => ({
-				...prevState,
-				error: ''
-			}))						
-		}
-
-		const handleCloseModal = () => {	
-			setValue({})
-			handleClose()
-			let timer;
-			if (message) {
-				timer = setTimeout(() => {
-					setMassege(initialState)	
-				}, 500)
-			} else {
-				clearTimeout(timer)
-			}				
-		}
+			const {id, value} = e.target			
+			dispatch(inputCheckbox({id, value}))						
+		}		
 
 		const handleClick = async () => {
-			await functionData({...value}).unwrap()
-			.then(payload => {
-				setValue({})
-				setMassege(prevState => ({
-					...prevState,
-					anser: payload.msg
-				}))		
-				let timerMessage, timerActive;
-				if (!message.anser) {
-					timerMessage = setTimeout(() => {
-						handleClose()
-					}, 1000)
-					
-					timerActive = setTimeout(() => {					
-						setMassege(initialState)
-						console.log(message)
-					}, 1800)
-				} else {					
-					clearTimeout(timerMessage)	
-					clearTimeout(timerActive)				
-				}				
-			})
-			.catch(error => {
-				setMassege(prevState => ({
-					...prevState,
-					error: error
-				}))
-				console.log(error)
-			})
+			await functItem({...value}).unwrap()			
 		}
 
 		return (
-			<Modal active={active} handleClose={handleCloseModal}>
+			<Modal active={active} handleClose={handleClose}>
 				{
 					!message.anser
 					? <Form 
-						message={message.error.data}
+						message={message.error}
 						title={title} 
-						handleClose={handleCloseModal}
+						handleClose={handleClose}
 						handleClick={handleClick}>
-						<View
+						<View									
 							message={message.error}
-							value={value}
-							onChange={onChange}
+							valueObj={value}
+							onChange={onChange}							
 							handleChange={handleChange}
 						/>
 					  </Form>

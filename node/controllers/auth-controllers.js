@@ -14,6 +14,7 @@ export default class AuthController {
 			if (!errors.isEmpty()) {
 				return next(ApiError.BadRequest('Ошибка при валидации', errors.array()))
 			}
+			
 			const {
 				login,
 				password,
@@ -54,10 +55,10 @@ export default class AuthController {
 	async login(req, res, next) {
 		try {
 			const {login, password} = req.body
+			
 			const userData = await authService.login(login, password)
 			res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})			
-			return res.json(userData)
-			
+			return res.json(userData)			
 		} catch (error) {
 			next(error)
 		}
@@ -77,7 +78,7 @@ export default class AuthController {
 		try {
 			
 			const {refreshToken} = req.cookies
-			// console.log(refreshToken)
+			
 			const token = await authService.refresh(refreshToken)
 			res.cookie('refreshToken', token.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})			
 			return res.json(token)

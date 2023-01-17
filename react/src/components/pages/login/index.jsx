@@ -1,126 +1,124 @@
-import React, {useState} from 'react';
-import {useNavigate, Navigate} from 'react-router-dom'
-import { useDispatch } from 'react-redux';
-import { setCredentials } from '../../../features/auth/authSlice';
+import React, { useState } from 'react';
+import {useNavigate} from 'react-router-dom'
 import { useAuthApiMutation } from '../../../features/auth/authApiSlice';
+import { useAppDispatch, useAppSelector } from './../../../hooks/hooks';
+import Button from '../../button';
+import { inputText, inputObject, clearInput } from '../../../features/input/inputSlice';
+import { messageObj, sendMessageError } from '../../../features/message/messageSlice';
 import './style.scss'
 
 const Login = () => {	
-
-	const [checked, setChecked] = useState(false)
-
-	const [change, setChange] = useState({
-		login: 'ваш логин',
-		password: 'ваш пароль',
-	})
-	const [value, setValue] = useState({
-		login: '',
-		password: '',
-	})
-
+	const [see, setSee] = useState(false)
+	const dispatch = useAppDispatch()
+	const {value} = useAppSelector(inputObject)
+	const {error} = useAppSelector(messageObj)
 	const navigate = useNavigate()
-
-	const [authApi, {isError, error}] = useAuthApiMutation()
-	const dispatch = useDispatch()
+	const [authApi] = useAuthApiMutation()	
 
 	const onChange = (e) => {
 		const {id, value} = e.target		
-		setValue(prevState => ({
-			...prevState,
-			[id]: value,
-		}))	
-		setChange(prevState => ({
-			...prevState,
-			[id]: value,
-		}))
+		dispatch(inputText({id, value}))
 	}
 
+	const handleChange = () => {
+		setSee(prevState => !prevState)
+	}
+
+	const evidently = see === false ? 'password' : 'text'
+	
 	const handleSubmit = async () => {
-		const {login} = value
-		try {
-			const userData = await authApi({...value}).unwrap()
-			dispatch(setCredentials({...userData, login}))
-			setValue({
-				password: '',
-				login: ''
-			})
-			setChange({
-				login: 'ваш логин',
-				password: 'ваш пароль',
-			})
+		await authApi(value).unwrap()
+		.then(() => {
+			dispatch(clearInput())
 			navigate('/blocknot')
-		} catch (err) {
-			console.log("ошибка",error)
-		}
+		})
+		.catch((err) => {
+			dispatch(sendMessageError(err))
+		})	
 	}
-
-	const handleChange = () => {		 
-		setChecked(!checked);		
-	}
-
-	if(localStorage.getItem("token")) {				
-		return <Navigate to='/blocknot'/>
-	}
+	
+	// if(token) {				
+	// 	return <Navigate to='/blocknot'/>
+	// }
 
 	return (
-		<div className='login'>
-			<div className="container">
-				<div className="wrraper">
+		<div className="container">
+			<div className="wrraper">
+				<div className='login'>
 					<div className='content'>
 						<div className='content-body'>
 							<div className='content-header'>
-								<h1>{isError ? error.data.message : 'Авторизация'}</h1>
+								<h4>Авторизация</h4>
 							</div>
 							<div className='content-main'>
-								<div className='holder'>
-									<label htmlFor="login">{change.login}</label>
-									<input 
-										id='login' 
-										value={value.login}
-										onChange={onChange}
-										type="text" />
-								</div>
-								<div className='holder'>
-									<label htmlFor="password">
-										{checked ? change.password : 'ваш пароль'}
-									</label>
-									<input 
-										id='password' 
-										value={value.password}
-										onChange={onChange}
-										type="password" />
-								</div>
-								<div className='holder-checkbox'>
-									<label htmlFor="welder">показать пароль
-										<div className="checket">
-											{!checked ? 'нет' : 'да'}
+								<div className='login-box'>
+									{
+										Object.keys(error).length !== 0 
+										? 	<div className="edit-box">
+												<div className='login-error'>
+													<p>{error?.data?.message}</p>
+												</div>												
+											</div>
+										: 	null										
+									}
+									<form>
+										<div className="edit-box">
+											<label 
+												className='edit-label description' 
+												htmlFor="login">Логин</label>
+											<input 
+												className='edit-text' 
+												type="text" 
+												id="login"
+												name="login" 
+												placeholder="Логин"
+												value={value.login || ''}
+												onChange={onChange} />
 										</div>
-									</label>
-									<input 
-										id='welder'
-										checked={checked}
-										onChange={handleChange} 
-										type="checkbox" />									
-								</div>
-							</div>
-							
+										<div className="edit-box">
+											<label 
+												className='edit-label description' 
+												htmlFor="password">Пароль</label>
+											<input 
+												className='edit-text' 
+												type={evidently} 
+												id="password"
+												name="password" 
+												placeholder="Пароль"
+												autoComplete="on"
+												value={value.password || ''}
+												onChange={onChange} />
+										</div>
+										<div className="edit-box">
+											<div className='edit-label description'>Показать пароль</div>
+											<label 
+												className='edit-label' 
+												htmlFor="see">
+												<input	
+													className='edit-checkbox'						 
+													type="checkbox" 
+													id="see"
+													checked={see}
+													onChange={handleChange} />
+												<div className="edit-slider">
+													<div className="edit-knob"></div>
+												</div>
+											</label>						
+										</div>
+									</form>									
+								</div>								
+							</div>							
 							<div className='content-footer'>
-								<div className='button'>
-									<button onClick={handleSubmit}>
-										войти
-									</button>
-								</div>
-								<div className='button'>
-									<button>
-										отмена
-									</button>
-								</div>
+								<Button 
+									handleClick={handleSubmit}>
+									Войти</Button>								
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		
 	);
 };
 

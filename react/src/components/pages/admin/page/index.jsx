@@ -3,88 +3,94 @@ import AdminPanel from '../panel'
 import Search from '../search'
 import UsersList from './../user-list';
 import { headTableUsers, headTableTypeWork } from '../../../../service/headTable';
-import AllTypeWork from './../all-type-work/index';
+import AllTypeWork from '../type-work-list';
 import {
 	useDeleteTypeWorkMutation,
-	useCreateTypeWorkMutation, 
-	useGetAllTypeWorkQuery } from '../../../../features/type-work/typeWorkApiSlice';
+	useCreateTypeWorkMutation,
+	useUpdateTypeWorkMutation} from '../../../../features/type-work/typeWorkApiSlice';
 import { useRegistreitApiMutation } from '../../../../features/auth/authApiSlice';
-import { useDeleteUserMutation, useGetUsersQuery } from '../../../../features/users/usersApiSlice';
+import { 
+	useDeleteUserMutation, 
+	useGetUsersQuery } from '../../../../features/users/usersApiSlice';
+import { activeModal, closeModal, openModal } from './../../../../features/modal/modalSlice';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
+import { inputTypeWork } from '../../../../features/input/inputSlice';
+import ReportLink from '../report/link';
+import { eventObject, changeTable } from './../../../../features/screenWidth/screenWidthSlice';
 import './style.scss'
 
-const initialState = {
-	deleteUser: false,
-	createUser: false,
-	createTypeWork: false,
-	deleteTypeWork: false
-}
-
-const AdminPage = () => {	
-	const [activeModal, setActiveModal] = useState(initialState)
-	const [item, setItem] = useState({})
+const AdminPage = (props) => {
+	const {typeWorks}	= props	
+	const [data, setData] = useState({})
+	const dispatch = useAppDispatch()
+	const active = useAppSelector(activeModal)
+	const isEvent = useAppSelector(eventObject)
 	const [createTypeWork] = useCreateTypeWorkMutation()
 	const [registreitApi] = useRegistreitApiMutation()
 	const [deleteUser] = useDeleteUserMutation()
 	const [deleteTypeWork] =useDeleteTypeWorkMutation()
-	const {
-		data, 
-		isLoading,
-		} = useGetUsersQuery('getUsers', {
+	const [updateTypeWork] = useUpdateTypeWorkMutation()	
+
+	const userList = useGetUsersQuery('getUsers', {
 		pollingInterval: 60000,
 		refetchOnFocus: true,
 		refetchOnMountOrArgChange: true
 	})
-
-	const getTypeWorks = useGetAllTypeWorkQuery('getTypeWork', {
-		pollingInterval: 60000,
-		refetchOnFocus: true,
-		refetchOnMountOrArgChange: true
-	})
-
-	const handleClick = (active, item ) => {
-		setItem(item)
-		console.log(item)
-		setActiveModal(prevState => ({
-			...prevState,
-			[active]: true,
-		}))
-	}	
 
 	const handleClose = () => {
-		setActiveModal(false)
-		setItem({})
+		dispatch(closeModal())
 	}
+
+	const handleClick = (active, value) => {
+		console.log(active, value)
+		dispatch(openModal(active))
+		switch (active) {
+			case 'createUser':
+				setData({functItem: registreitApi, handleClose})
+				break;
+			case 'deleteUser':
+				setData({functItem: deleteUser, handleClose, value})
+				break;
+			case 'createTypeWork':
+				setData({functItem: createTypeWork, handleClose})
+				break;
+			case 'updateTypeWork':
+				dispatch(inputTypeWork({...value}))
+				setData({functItem: updateTypeWork, handleClose, })
+				break;
+			case 'deleteTypeWork':
+				setData({functItem: deleteTypeWork, handleClose, value})
+				break;
+			default:
+				break;
+		}
+	}		
 	
 	return (
 		<div className='admin'>			
 			<div className='container'>
 				<div className="wrraper">								
 					<AdminPanel 
-						active={activeModal}
-						createTypeWork={createTypeWork}
-						registreitApi={registreitApi}
-						handleClick={handleClick}
-						handleClose={handleClose}
-					/>
+						data={data}
+						active={active}
+						handleClick={handleClick}/>
 					<AllTypeWork
-						typeWork={item}
-						active={activeModal.deleteTypeWork}
-						deleteTypeWork={deleteTypeWork}
+						isEvent={isEvent.tableTypeWork}
+						data={data}
+						changeIsEvent={changeTable.changeTableTypeWork}
+						active={active}						
 						headTableTypeWork={headTableTypeWork}
-						getTypeWorks={getTypeWorks}
-						handleClick={handleClick}
-						handleClose={handleClose}
-					/>					
-					<Search/>
+						typeWorks={typeWorks}
+						handleClick={handleClick} />
 					<UsersList 
-						isLoading={isLoading}
-						active={activeModal.deleteUser}
-						data={data} 
-						user={item}
-						deleteUser={deleteUser}
+						isEvent={isEvent.tableUser}
+						changeIsEvent={changeTable.changeTableUser}
+						data={data}
+						userList={userList}
+						active={active.deleteUser}	
 						headTableUsers={headTableUsers}
-						handleClick={handleClick}
-						handleClose={handleClose} />
+						handleClick={handleClick}/>
+					<ReportLink />
 				</div>
 			</div>
 		</div>

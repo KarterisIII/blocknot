@@ -6,15 +6,22 @@ import mongoose from 'mongoose'
 import router from './router/index.js'
 import errorMiddleware from './middlewares/error-middleware.js'
 import corsOptions from './config/corsOptions.js';
-
 dotenv.config()
-
-const PORT = process.env.PORT || 5000
 const app = express()
+const PORT = process.env.PORT || 5000
+
+
+
+app.use(cors(corsOptions));
+
+// app.use(cors({
+// 	origin: 'http://185.99.154.132:3000', 
+// 	credentials: true
+// }))
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors(corsOptions))
 app.use('', router)
+
 app.use(errorMiddleware)
 
 const start = async () => {

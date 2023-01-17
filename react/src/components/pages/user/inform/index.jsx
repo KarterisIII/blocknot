@@ -1,26 +1,31 @@
 import React from 'react';
 import { userDate } from '../../../../config';
 
-const index = (props) => {
+const UserInform = (props) => {
 	const {user} = props
-	
+	const screenWidth = window.screen.width	
+	const username = screenWidth < 767 
+		? `${user.surname} ${user.username.slice(0, 1)}. ${user.patronymic.slice(0, 1)}.` 
+		: `${user.surname} ${user.username} ${user.patronymic}` 
+	const mainMachine = screenWidth < 767 ? 'С. М.' : 'Старший машины'
+	const DriverLicense = screenWidth < 767  ? 'В. П.' : 'Водительские права'
 	return (
 		<>
 			<div className='information'>
 				<div className="item user-name">
 					<div className='item-box'>
 						<div className='description box'>
-							имя работника
+							работник
 						</div>
 						<div className="title box">
-							{user.surname} {user.username} {user.patronymic}
+							{username}
 						</div>								
 					</div>							
 				</div>
 				<div className="item experience">
 					<div className='item-box'>
 						<div className='description box'>
-							непрерывный стаж
+							стаж
 						</div>
 						<div className="title box">
 							{userDate(user.experience)}
@@ -30,7 +35,7 @@ const index = (props) => {
 				<div className="item exams">
 					<div className='item-box'>
 						<div className='description box'>
-							баллы за экзамен
+							экзамен
 						</div>
 						<div className="title box">
 							{user.exams}
@@ -43,7 +48,7 @@ const index = (props) => {
 							оклад
 						</div>
 						<div className="title box">
-							<span>{user.salary}</span> руб
+							<span>{user.salary}</span>р.
 						</div>	
 					</div>
 				</div>
@@ -52,7 +57,7 @@ const index = (props) => {
 				<div className="item driver">
 					<div className='item-box'>
 						<div className='description box'>
-							старший машины
+							{mainMachine}
 						</div>
 						<div className="title box">
 							{user.driver ? 'да' : 'нет'}
@@ -62,7 +67,7 @@ const index = (props) => {
 				<div className="item driver-license">
 					<div className='item-box'>
 						<div className='description box'>
-							водительские права
+							{DriverLicense}
 						</div>
 						<div className="title box">
 							{user.driver ? 'да' : 'нет'}
@@ -94,4 +99,4 @@ const index = (props) => {
 	)
 }
 
-export default index;
+export default UserInform;

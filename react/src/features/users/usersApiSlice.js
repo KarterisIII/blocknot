@@ -1,5 +1,7 @@
 import { api } from '../../app/api/api';
 import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
+import { usersData } from '../search/seachSlice';
+import { catchMessage } from '../../config';
 
 const usersAdapter = createEntityAdapter({
 	sortComparer: (a, b) => b.date.localeCompare(a.date)
@@ -16,6 +18,14 @@ export const usersApiSlice = api.injectEndpoints({
 					return response.status === 200 && !result.isError
 				},
 			}),
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled                    
+                    dispatch(usersData(data))
+                } catch (err) {					
+                    console.log(err)
+                }
+            },
 			transformResponse: responseData => {							
 				return usersAdapter.setAll(initialState, responseData)
 			},
@@ -32,21 +42,50 @@ export const usersApiSlice = api.injectEndpoints({
 			}
 		}),
 		updateUser: builder.mutation({
-			query: (userData) => ({
-				url: `user/${userData.id}`,
+			query: ({value:{
+				username,
+				surname,
+				patronymic,
+				salary,
+				experience,
+				login,
+				id},
+				checkbox: {
+					driver,
+					seniorDriver,
+					welder,
+					education}
+			}) => ({
+				url: `user/${id}`,
 				method: 'PATCH',
-				body: {...userData}
+				body: {username,
+					surname,
+					patronymic,
+					salary,
+					experience,
+					login,
+					driver,
+					seniorDriver,
+					welder,
+					education}
 			}),
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+				await catchMessage(dispatch, queryFulfilled)
+			},
 			invalidatesTags: (result, error, arg) => [
 				{type: 'User', id: arg.id}
 			]
 		}),
+		
 		deleteUser: builder.mutation({
 			query: id => ({
 				url: `user/${id}`,
 				method: 'DELETE',
 
 			}),
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                await catchMessage(dispatch, queryFulfilled)
+            },
 			invalidatesTags: (result, error, arg) => [
 				{type: 'User', id: arg.id}
 			]

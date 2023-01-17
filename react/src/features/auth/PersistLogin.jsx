@@ -1,15 +1,15 @@
-import React, { useEffect,useState } from 'react'
-import { Outlet, Link, Navigate } from "react-router-dom"
+import React, { useEffect, useState } from 'react'
+import { Outlet, Navigate} from "react-router-dom"
 import { useRefreshMutation } from "../auth/authApiSlice"
 import { useSelector } from 'react-redux'
 import { selectCurrentToken } from "./authSlice"
 import Loading from '../../components/loading'
+import Authorization from './../../components/pages/authorization/index';
 
-const PersistLogin = () => {
-    
+const PersistLogin = () => {    
     const token = useSelector(selectCurrentToken)
-
     const [trueSuccess, setTrueSuccess] = useState(false)
+    
 
     const [refresh, {
         isUninitialized,
@@ -17,19 +17,19 @@ const PersistLogin = () => {
         isSuccess,
         isError,
         error
-    }] = useRefreshMutation()
+    }] = useRefreshMutation()    
 
-    useEffect(() => { 
-        const verifyRefreshToken = async () => {
+    useEffect(() => {         
+        const verifyRefreshToken = async () => {               
             try {                    
-                await refresh()                    
+                await refresh()                 
                 setTrueSuccess(true)
             }
             catch (err) {
-                console.error(err)
+                console.log(err)                    
             }
-        }
-        if (!token && localStorage.getItem("token")) verifyRefreshToken()  
+        }            
+        if (!token && localStorage.getItem("token")) verifyRefreshToken()              
     }, [])
 
     let content
@@ -44,12 +44,7 @@ const PersistLogin = () => {
             </div>
         )
     } else if (isError) { 
-        content = (
-            <p className='errmsg'>
-                {error.data?.message}                
-                <Link to="/">Авторизуйтесь заново</Link>.
-            </p>
-        )
+        content = <Authorization error={error}/>
     } else if (isSuccess && trueSuccess) { 
         content = <Outlet/>
     } else if (token && isUninitialized) { 

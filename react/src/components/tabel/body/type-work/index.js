@@ -4,27 +4,32 @@ import { useGetAllTypeWorkQuery } from '../../../../features/type-work/typeWorkA
 import tabelWrapper from '../../../hoc/tabel-wrapper';
 
 const TypeWorkItem = (props) => {
-	const {index, item, handleClick} = props
+	const {index, item, handleClick, screenWidth} = props
 
 	const {typeWork} = useGetAllTypeWorkQuery('getTypeWork', {
 		selectFromResult: ({data}) => ({
 			typeWork: data?.entities[item]
 		})
-	})
+	})	
 
 	return (
-		<div title='подробнее' className="table-line">
-			<div className="item description box">{index + 1}</div>
-			<div className="item description box">{checkDate(typeWork?.creationDate)}</div>
-			<div className="item description box">{typeWork?.workName}</div>
-			<div className="item description box">{checkDate(typeWork?.editDate)}</div>			
-			<div className="item description box">{typeWork?.point}</div>
+		<div className="table-line">
+			<div className="item box">{index + 1}</div>
+			{screenWidth < 767
+				? null
+				: <div className="item box">{checkDate(typeWork?.creationDate)}</div>}
 			<div 
-				onClick={() => handleClick('editTypeWork')} 
-				className="item description box">редактировать</div>
+				title='редактировать'
+				onClick={() => handleClick('updateTypeWork', typeWork)}
+				className="item box link-item">{typeWork?.workName}</div>			
+			{screenWidth < 767
+				? null
+				: <div className="item box">{checkDate(typeWork?.editDate)}</div>}			
+			<div className="item box">{typeWork?.point}</div>
 			<div 
+				title='удалить'
 				onClick={() => handleClick('deleteTypeWork', typeWork.id)} 
-				className="item description box">удалить</div>			
+				className="item box link-item">удалить</div>			
 		</div>
 	);
 };

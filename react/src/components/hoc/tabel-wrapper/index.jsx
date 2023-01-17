@@ -1,19 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Loading from '../../loading'
 import TableHeader from '../../tabel/header'
-import RemoveItem from '../remove-item';
-import Modal from './../../modal/Modal';
-
-const initialState = {
-	error: {
-		error: '',
-		anser: '',
-	},
-	modal: {
-		active: false,
-		itemId: null
-	}
- }
+import { useAppDispatch } from './../../../hooks/hooks';
 
 const tabelWrapper = (View) => {
 
@@ -24,21 +12,34 @@ const tabelWrapper = (View) => {
 			data, 
 			headTable,
 			handleClick,
-			} = props		
+			isEvent,
+			changeIsEvent
+			} = props	
 			
+		const dispatch = useAppDispatch()
+		const screenWidth = window.screen.width	
+		const head = () => {
+			if (screenWidth < 767 && isEvent === false) {
+				dispatch(changeIsEvent())
+				headTable.splice(-3, 1) && headTable.splice(1, 1)
+			}
+			return headTable
+		}			
+
 		return (			
 			<div className='table'>				
-				<TableHeader headTable={headTable}/>
+				<TableHeader headTable={head}/>
 				<div className="table-body">					
 					{ isLoading
 						? <Loading/>
-						: data.ids.map((itemId, index) => {							
+						: data?.ids.map((item, index) => {							
 							return 	<View 
+										screenWidth={screenWidth}
 										dataId={data}
 										handleClick={handleClick} 
 										index={index} 
-										key={itemId} 
-										item={itemId}/>
+										key={item} 
+										item={item}/>
 						})
 					}	
 				</div>

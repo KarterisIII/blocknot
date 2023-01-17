@@ -18,13 +18,9 @@ const Modal = (props) => {
 				className = {contextModal}
 				onClick = {
 					e => e.stopPropagation()
-				} >
-				<div onClick={handleClose} className='modal-close'>
-				<span className='close'></span>
-				</div>
+				} >				
 				{children}
-			</div>
-			
+			</div>			
 		</div>
 	);
 };

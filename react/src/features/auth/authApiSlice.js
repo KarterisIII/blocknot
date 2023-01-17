@@ -1,4 +1,5 @@
 import { api } from '../../app/api/api';
+import { catchMessage } from '../../config';
 import { logOut, setCredentials } from './authSlice';
 
 export const authApiSlice = api.injectEndpoints({
@@ -7,15 +8,27 @@ export const authApiSlice = api.injectEndpoints({
 			query: credentials => ({
 				url: '/login',
 				method: 'POST',
-				body: {...credentials}
-			})			
+				body: {...credentials},
+			}),			
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled  
+					dispatch(setCredentials(data))
+                    
+                } catch (err) {					
+                    console.log(err)
+                }
+            },			
 		}),
 		registreitApi: builder.mutation({
-			query: credentials =>({
+			query: ({value, checkbox}) =>({
 				url: '/registration',
 				method: 'POST',
-				body: {...credentials}
+				body: {...value, ...checkbox}
 			}),
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                await catchMessage(dispatch, queryFulfilled)
+            },
 			invalidatesTags: (result, error, arg) => [
 				{type: 'User', id: arg.id}
 			]			
@@ -48,6 +61,7 @@ export const authApiSlice = api.injectEndpoints({
                     
                     dispatch(setCredentials({ ...data }))
                 } catch (err) {
+					// localStorage.removeItem('token')
                     console.log(err)
                 }
             }			

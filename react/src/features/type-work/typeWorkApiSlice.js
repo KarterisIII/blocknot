@@ -1,5 +1,7 @@
 import { api } from '../../app/api/api';
 import { createEntityAdapter } from '@reduxjs/toolkit';
+import { worksData } from '../search/seachSlice';
+import { catchMessage } from '../../config';
 
 const typeWorksAdapter = createEntityAdapter({
 	sortComparer: (a, b) => b.creationDate.localeCompare(a.date)
@@ -15,11 +17,20 @@ export const typeWorkApiSlice = api.injectEndpoints({
 				validateStatus: (response, result) => {
 					return response.status === 200 && !result.isError
 				},
+				
 			}),
-			transformResponse: responseData => {
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled  
+                    dispatch(worksData(data))
+                } catch (err) {					
+                    console.log(err)
+                }
+            },
+			transformResponse: responseData => {				
 				return typeWorksAdapter.setAll(initialState, responseData)
 			},
-			providesTags: (result, error, arg) => {
+			providesTags: (result, error, arg) => {				
 				if(result?.ids) {
 					return [
 						{type: 'TypeWork', id: 'LIST'},
@@ -32,22 +43,34 @@ export const typeWorkApiSlice = api.injectEndpoints({
 				}
 			}
 		}),
+		searchTypeWorks: builder.query({
+			query: (typeWorks) => ({
+				url: `/search-type-work${typeWorks}`,
+			}),
+			transformResponse: responseData => responseData,
+		}),
 		createTypeWork: builder.mutation({
-			query: (typeWorkData) => ({
+			query: ({value}) => ({
 				url: 'type-work',
 				method: 'POST',
-				body: {...typeWorkData}
+				body: {...value}
 			}),
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                await catchMessage(dispatch, queryFulfilled)
+            },
 			invalidatesTags: (result, error, arg) => [
 				{type: 'TypeWork', id: arg.id}
 			]
 		}),
 		updateTypeWork: builder.mutation({
-			query: (typeWorkData) => ({
-				url: `type-work/${typeWorkData.id}`,
+			query: ({ value: { workName, point, id }}) => ({
+				url: `type-work/${id}`,
 				method: 'PATCH',
-				body: {...userData}
+				body: {workName, point,}
 			}),
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                await catchMessage(dispatch, queryFulfilled)
+            },
 			invalidatesTags: (result, error, arg) => [
 				{type: 'TypeWork', id: arg.id}
 			]
@@ -57,6 +80,9 @@ export const typeWorkApiSlice = api.injectEndpoints({
 				url: `type-work/${id}`,
 				method: 'DELETE'
 			}),
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                await catchMessage(dispatch, queryFulfilled)
+            },
 			invalidatesTags: (result, error, arg) => [
 				{type: 'TypeWork', id: arg.id}
 			]
@@ -66,6 +92,7 @@ export const typeWorkApiSlice = api.injectEndpoints({
 
 export const {
 	useCreateTypeWorkMutation,
+	useSearchTypeWorksQuery,
 	useDeleteTypeWorkMutation,
 	useGetAllTypeWorkQuery,
 	useUpdateTypeWorkMutation

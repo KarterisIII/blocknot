@@ -33,6 +33,7 @@ fieldset:nth-last-child(1) {
 }
 .edit-text {
 	border: none;
+	padding: 3px;
 	border-bottom: 1px solid black;
 	&:focus {
 		outline: none;

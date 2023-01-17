@@ -2,9 +2,9 @@ import formWrapper from '../../hoc/form-wrapper/wrapper/index';
 import './style.scss'
 
 const TypeWork = (props) => {
-	const {value, onChange, message} = props
-
-	const error = message ? 'edit-text error-message' : 'edit-text' 
+	const {valueObj, onChange, message} = props
+	const {value} = valueObj
+	const error = message.message ? 'edit-text error-message' : 'edit-text' 
 
 	return (
 		<div className='type-work'>				
@@ -19,7 +19,7 @@ const TypeWork = (props) => {
 						id="workName"
 						name="workName" 
 						placeholder="Тип работы"
-						value={value?.workName || ''}
+						value={value.workName || ''}
 						onChange={onChange} />
 				</div>
 				<div className="edit-box">
@@ -32,7 +32,7 @@ const TypeWork = (props) => {
 						id="point"
 						name="point" 
 						placeholder="Балл за работу"
-						value={value?.point || ''}
+						value={value.point || ''}
 						onChange={onChange} />
 				</div>	
 			</div>		

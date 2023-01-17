@@ -1,10 +1,13 @@
+import { clearMessage, sendMessageAnser, sendMessageError } from '../features/message/messageSlice'
+import { closeModal } from '../features/modal/modalSlice'
+
 export const checkDate = (data) => {
 	
 	const answer = new Date(data).toLocaleDateString()
 	return answer
 }
 
-const getZero = (date) => {
+export const getZero = (date) => {
 	if (date >= 0 && date < 10) {
 		return `0${date}`
 	} else {
@@ -19,9 +22,9 @@ export const userDate = (date) => {
 	let answer
 	
 	if (year >= 5) {
-		answer = `${year} лет. ${month} мес.`
+		answer = `${year}л. ${month}м.`
 	} else {
-		answer = `${year} год. ${month} мес.`
+		answer = `${year}г. ${month}м.`
 	}
 	
 	return answer
@@ -35,4 +38,30 @@ export const checkBool = (data) => {
 export const checkNum = (data) => {
 	const answer = data ? data : 13000
 	return answer
+}
+
+export const catchMessage = async (dispatch, queryFulfilled) => {
+	try {
+		const { data } = await queryFulfilled
+		dispatch(sendMessageAnser(data.msg))
+		setTimeout(() => {
+			setTimeout(() => {
+				dispatch(clearMessage())
+			}, 1300)
+			dispatch(closeModal())
+		}, 1000)
+	} catch (err) {
+		dispatch(sendMessageError(err.error.data))                    
+	}	
+}
+
+export const getSheetData = (data, header) => {
+    const fields = Object.keys(data[0]);
+    const sheetData = data.map(function (row) {
+      return fields.map(function (fieldName) {
+        return row[fieldName] ? row[fieldName] : "";
+      });
+    });
+    sheetData.unshift(header);
+    return sheetData;
 }

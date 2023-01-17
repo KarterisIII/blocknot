@@ -13,6 +13,12 @@ export default class UserService {
 		return usersDto
 	}
 
+	async getUsers(userId) {
+		const users = await userModel.find({_id: {$all: userId}})
+
+		return users
+	}
+
 	async getOneUser(id) {
 		const user = await userModel.findById({_id: id}).populate('work').exec()
 		if(!user) {
@@ -25,8 +31,8 @@ export default class UserService {
 	async updateUser(id, userData) {
 		
 		const user = await userModel.findByIdAndUpdate({_id: id}, userData, {new: true})
-		const userDto = new UserDto(user)
-		return userDto
+		
+		return user
 	}
 
 	async deleteUser(id) {
@@ -36,7 +42,8 @@ export default class UserService {
 			throw ApiError.BadRequest('Пользователя не существует')
 		}
 
-		await workModel.deleteMany({_id: {$in: user.work}})
+		await workModel.updateMany({userId: id}, {$pull: {userId: id}})
+
 		return user
 	}
 }

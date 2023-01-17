@@ -3,15 +3,30 @@ import { checkDate } from '../../../../config';
 import tabelWrapper from '../../../hoc/tabel-wrapper';
 
 const WorkItem = (props) => {
-	const {handleClick, item, dataId, index} = props
+	const {handleClick, item, dataId, index, screenWidth} = props
+
+	const data = dataId?.entities[item]
+	const classWork = data.workDone ? 'table-line' : 'table-line not-done'
 	
 	return (
-		<div onClick={() =>{handleClick(dataId?.entities[item])}} title='подробнее' className="table-line">
-			<div className="item description box">{index +1}</div>
-			<div className="item description box">{checkDate(dataId?.entities[item].date)}</div>
-			<div className="item description box">{dataId?.entities[item].workName}</div>
-			<div className="item description box">{dataId?.entities[item].comment}</div>
-			<div className="item description box">баллы</div>
+		<div title='подробнее' className={classWork}>
+			<div className="item box">{index +1}</div>
+			{screenWidth < 767 ? null : <div className="item box">
+				{checkDate(data.date)}
+			</div>}
+			<div
+				onClick={() => handleClick('updateWork', data)} 
+				className="item box link-item">
+				{data.workName}
+			</div>
+			<div className="item box">{Math.trunc( data.point * 100 ) / 100}</div>
+			{screenWidth < 767 
+				? null 
+				: <div className="item box">{checkDate(data.editDate)}</div>}
+			<div className="item box">{data.comment}</div>
+			<div 
+				onClick={() => handleClick('deleteWork', item)}
+				className="item box link-item">удалить</div>
 		</div>
 	);
 };

@@ -1,48 +1,15 @@
-import { useState } from 'react';
-import './style.scss'
 import Button from './../../button/index';
 import Modal from '../../modal/Modal';
-import Message from './../form-wrapper/massege/index';
-
-const initialState = {	
-	error: '',
-	anser: '',	
-}
-
+import Message from './../form-wrapper/massege';
+import { messageObj } from './../../../features/message/messageSlice';
+import { useAppSelector } from '../../../hooks/hooks';
+import './style.scss'
 const RemoveItem = (props) => {
-	const {id, functionData, handleClose, active} = props	
-	
-	const [message, setMassege] = useState(initialState)
-	
-	const handleDelete = async () => {
-		console.log(id)
-		await functionData(id).unwrap()
-		.then(payload => {				
-			setMassege(prevState => ({
-				...prevState,
-				anser: payload.msg
-			}))		
-			let timerMessage, timerActive;
-			if (!message.anser) {
-				timerMessage = setTimeout(() => {
-					handleClose()
-				}, 1000)
-				
-				timerActive = setTimeout(() => {					
-					setMassege(initialState)
-				}, 1800)
-			} else {					
-				clearTimeout(timerMessage)	
-				clearTimeout(timerActive)				
-			}				
-		})
-		.catch(error => {
-			setMassege(prevState => ({
-				...prevState,
-				error: error
-			}))			
-		})
-	}
+	const {data, handleClose, deleteItem, active} = props	
+	const message = useAppSelector(messageObj)
+	const handleDelete = async () => {		
+		await deleteItem(data).unwrap()		
+	}	
 
 	return (
 		<div className="remove-item">
@@ -51,7 +18,7 @@ const RemoveItem = (props) => {
 					? 	<div className='content'>
 							<div className='content-body'>
 								<div className='content-header'>
-									<h1>Удалить</h1>
+									<h4>Удалить</h4>
 								</div>
 								<div className='content-footer'>
 									<Button handleClick={handleDelete}>
@@ -64,8 +31,7 @@ const RemoveItem = (props) => {
 							</div>		
 						</div>
 					:	<Message message={message.anser}/>
-				}
-				
+				}				
 			</Modal>
 		</div>
 	);

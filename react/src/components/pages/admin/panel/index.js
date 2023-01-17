@@ -6,30 +6,28 @@ import './style.scss'
 
 const AdminPanel = (props) => {
 	const {
-		active, 
-		registreitApi, 
-		createTypeWork,
-		handleClick,
-		handleClose
-	} = props		
+		data,
+		active,
+		handleClick,		
+	} = props
 	
 	return (
 		<div className="admin-panel">			
-			<TypeWork 
+			<TypeWork
 				title={'Создать вид работы'}
 				active={active.createTypeWork} 
-				handleClose={handleClose}
-				functionData={createTypeWork}
+				handleClose={data.handleClose}
+				functItem={data.functItem}
 			/>
 			<EditUser
+				functItem={data.functItem}
 				title={'Создать работника'}
-				active={active.createUser} 
-				handleClose={handleClose}
-				functionData={registreitApi}
+				handleClose={data.handleClose}
+				active={active.createUser}
 			/>
 			<div className="content">
 				<div className="content-body">
-					<div className="panel-button-box">
+					<div className="panel-box">
 						<Button handleClick={() => handleClick('createUser')}>
 							создать работника
 						</Button>

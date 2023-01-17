@@ -1,29 +1,31 @@
 import React from 'react';
 import RemoveItem from '../../../hoc/remove-item';
 import UserItem from '../../../tabel/body/user'
+import './style.scss'
 
 const UsersList = (props) => {
 	const {
+		data,
 		active,
-		data, 
-		user, 
+		isEvent,
+		userList,
+		changeIsEvent,
 		headTableUsers, 
-		deleteUser, 
-		isLoading, 
-		handleClick,
-		handleClose} = props	
+		handleClick,} = props	
 
 	return (
 		<div className='users-list'>
 			<RemoveItem 
+				data={data.value}
 				active={active} 
-				functionData={deleteUser} 
-				handleClose={handleClose}
-				id={user}/>
+				deleteItem={data.functItem} 
+				handleClose={data.handleClose}/>
 			<UserItem 
+				isEvent={isEvent}
+				changeIsEvent={changeIsEvent}
 				headTable={headTableUsers} 
-				data={data} 
-				isLoading={isLoading}
+				data={userList.data} 
+				isLoading={userList.isLoading}
 				handleClick={handleClick}
 				/>
 		</div>

@@ -7,3 +7,8 @@ export const registrationValidator = [
 	body('surname', 'укажите фамилию работника').isLength({min: 3}),
 ]
 
+export const typeWorkValidator = [
+	body('workName', 'тип работ не должен быть пустым').not().isEmpty().trim().escape(),
+	body('point', 'баллы за работу не должен быть пустым').not().isEmpty().trim().escape(),
+]
+

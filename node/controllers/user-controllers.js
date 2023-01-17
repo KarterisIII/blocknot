@@ -13,6 +13,17 @@ export default class UserController {
 			next(error)
 		}
 	}
+	async getUsers(req, res, next) {
+		try {
+			const {userId} = req.body
+			
+			const users = await userService.getUsers(userId)
+
+			res.json(users)
+		} catch (error) {
+			next(error)
+		}
+	}
 	async getOneUser(req, res, next) {
 		try {
 			const {id} = req.params
@@ -32,7 +43,6 @@ export default class UserController {
 				driver,
 				education,
 				experience,
-				exams,
 				welder,
 				role,
 				salary,
@@ -46,7 +56,6 @@ export default class UserController {
 				driver,
 				education,
 				experience,
-				exams,
 				welder,
 				role,
 				salary,
@@ -54,7 +63,8 @@ export default class UserController {
 			} 
 			
 			const user = await userService.updateUser(id, userData)
-			return res.json({msg:`работа ${user.surname} обнавлена`})
+			console.log(user.surname)
+			return res.json({msg:`пользователь ${user.surname} обнавлен`})
 			
 		} catch (error) {
 			next(error)

@@ -10,6 +10,14 @@ export default class TypeWorkService {
 		return typesWorksDto
 	}
 
+	async searchTypeWorks(typeWork) {
+		const typesWorks = await typeWorkModel.find()
+		const typesWorksDto = typesWorks.map(type => new TypeWorkDto(type))
+		const typeWorksSearch = typesWorksDto
+									.filter(work => work?.workName.toLowerCase()
+									.includes(typeWork.toLowerCase()))
+		return typeWorksSearch
+	}
 	async createTypeWork(workName, point) {
 		
 		const workNameData = await typeWorkModel.findOne({workName})
@@ -23,8 +31,9 @@ export default class TypeWorkService {
 	}
 
 	async updateTypeWork(id, typeWorkData) {
+		typeWorkData.editDate = new Date()
 		const typeWork = await typeWorkModel.findByIdAndUpdate(
-			{_id: id}, 
+			{_id: id},
 			typeWorkData,
 			{new: true} )
 		const typeWorkDto = new TypeWorkDto(typeWork)

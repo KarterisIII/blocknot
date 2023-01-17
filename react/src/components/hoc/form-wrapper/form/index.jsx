@@ -10,16 +10,16 @@ const Form = (props) => {
 		children,		
 		handleClick,
 		handleClose} = props
-		
+		const classMessage = message.message ? 'content-body-error' : 'content-body'
 	return (
 		<div className="content">
-			<div className="content-body">
+			<div className={classMessage}>
 				<div className="content-header">
-					<h1>{title}</h1>					
+					<h4>{title}</h4>					
 				</div>
 				<div className="content-main">
 					{
-						!message
+						!message.message
 						? null
 						: <MessageError message={message} />
 					}

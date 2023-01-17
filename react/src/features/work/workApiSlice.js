@@ -1,5 +1,6 @@
 import {api} from '../../app/api/api'
 import { createEntityAdapter } from '@reduxjs/toolkit'
+import { catchMessage } from '../../config'
 
 const worksAdapter = createEntityAdapter({
 	sortComparer: (a, b) => b.date.localeCompare(a.date)
@@ -31,30 +32,40 @@ export const workApiSlice = api.injectEndpoints({
 			}
 		}),
 		createWork: builder.mutation({
-			query: workData => ({
+			query: ({workId, usersId, value: {comment, optics, copper}, checkbox: {workDone}}) => ({
 				url: '/work',
 				method: 'POST',
-				body: {...workData}
+				body: {workId, usersId, comment, optics, copper, workDone}
 			}),
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                await catchMessage(dispatch, queryFulfilled)
+            },
 			invalidatesTags: (result, error, arg) => [
 				{type: 'Work', id: arg.id}
 			]
 		}),
 		updateWork: builder.mutation({
-			query: (workData) => ({
+			query: ({workId, usersId, value: {comment, optics, copper}, checkbox: {workDone}}) => ({
 				url: `/work`,
 				method: 'PATCH', 
-				body: {...workData}
+				body: {workId, usersId, comment, optics, copper, workDone}
 			}),
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                await catchMessage(dispatch, queryFulfilled)
+            },
 			invalidatesTags: (result, error, arg) => [
 				{type: 'Work', id: arg.id}
 			]
 		}),
 		deleteWork: builder.mutation({
-			query: id => ({
+			query: ({userId, id}) => ({
 				url: `/work/${id}`,
+				body: userId,
 				method: 'DELETE'
 			}),
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                await catchMessage(dispatch, queryFulfilled)
+            },
 			invalidatesTags: (result, error, arg) => [
 				{type: 'Work', id: arg.id}
 			]

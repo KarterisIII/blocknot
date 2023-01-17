@@ -2,7 +2,9 @@ import formWrapper from '../../hoc/form-wrapper/wrapper';
 import './style.scss'
 
 const EditUser = (props) => {
-	const {value, onChange, handleChange} = props	
+	const {valueObj, onChange, handleChange} = props	
+
+	const {value, checkbox} = valueObj
 	
 	return (
 		<div className='edit-user'>
@@ -19,7 +21,7 @@ const EditUser = (props) => {
 							id="login"
 							name="login" 
 							placeholder="Логин"
-							value={value?.login || ''}
+							value={value.login || ''}
 							onChange={onChange} />
 					</div>
 					<div className="edit-box">
@@ -32,7 +34,7 @@ const EditUser = (props) => {
 							id="password"
 							name="password" 
 							placeholder="пароль"
-							value={value?.password || ''}
+							value={value.password || ''}
 							onChange={onChange} />
 					</div>	
 				</div>
@@ -50,7 +52,7 @@ const EditUser = (props) => {
 							id="username"
 							name="username"
 							placeholder="Имя"
-							value={value?.username || ''}
+							value={value.username || ''}
 							onChange={onChange} />
 					</div>	
 					<div className="edit-box">
@@ -63,7 +65,7 @@ const EditUser = (props) => {
 							id="patronymic"
 							name="patronymic" 
 							placeholder="Отчество"
-							value={value?.patronymic || ''}
+							value={value.patronymic || ''}
 							onChange={onChange} />
 					</div>
 					<div className="edit-box">
@@ -76,7 +78,7 @@ const EditUser = (props) => {
 							id="surname"
 							name="surname" 
 							placeholder="Фамилия"
-							value={value?.surname || ''}
+							value={value.surname || ''}
 							onChange={onChange} />
 					</div>	
 				</div>
@@ -93,7 +95,7 @@ const EditUser = (props) => {
 							type="date" 
 							id="experience"
 							name="experience" 
-							value={value?.experience || ''}
+							value={value.experience || ''}
 							onChange={onChange} />
 					</div>					
 					<div className="edit-box">
@@ -106,7 +108,7 @@ const EditUser = (props) => {
 							id="salary" 
 							name="salary" 
 							placeholder="Оклад"
-							value={value?.salary || ''}
+							value={value.salary || ''}
 							onChange={onChange} />
 					</div>					
 				</div>
@@ -121,7 +123,7 @@ const EditUser = (props) => {
 								type="checkbox" 
 								id="welder"
 								name="welder"
-								checked={value?.welder || false}
+								checked={checkbox.welder || false}
 								onChange={handleChange}	/>
 							<div className="edit-slider">
 								<div className="edit-knob"></div>
@@ -138,7 +140,7 @@ const EditUser = (props) => {
 								type="checkbox" 
 								id="seniorDriver"
 								name="seniorDriver"
-								checked={value?.seniorDriver || false}
+								checked={checkbox.seniorDriver || false}
 								onChange={handleChange}	/>
 							<div className="edit-slider">
 								<div className="edit-knob"></div>
@@ -157,7 +159,7 @@ const EditUser = (props) => {
 								type="checkbox" 
 								id="driver"
 								name="driver"
-								checked={value?.driver || false}
+								checked={checkbox.driver || false}
 								onChange={handleChange}	/>
 							<div className="edit-slider">
 								<div className="edit-knob"></div>
@@ -174,7 +176,7 @@ const EditUser = (props) => {
 								type="checkbox" 
 								id="education"
 								name="education"
-								checked={value?.education || false}
+								checked={checkbox.education || false}
 								onChange={handleChange}	/>
 							<div className="edit-slider">
 								<div className="edit-knob"></div>

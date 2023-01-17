@@ -49,7 +49,6 @@
 			box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.3);
 		}
 		.description {
-			background-color: white;
 			border-right: none;
 		}
 		.description:nth-last-child(1) {
@@ -57,7 +56,6 @@
 		}
 		.table-line {
 			.description {
-				color: black;
 				border-top: none;
 			}
 		}
@@ -68,22 +66,5 @@
 		}
 	}
 	
-	.table-line {
-		display: flex;
-		.item:nth-child(1) {
-			flex-basis: 5%;
-		}
-		.item:nth-child(2) {
-			flex-basis: 12%;
-		}
-		.item:nth-child(3) {
-			flex-basis: 40%;
-		}
-		.item:nth-child(4) {
-			flex-basis: 40%;
-		}
-		.item:nth-child(5) {
-			flex-basis: 8%;
-		}		
-	}
+	
 }

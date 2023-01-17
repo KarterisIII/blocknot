@@ -1,0 +1,26 @@
+.login {
+	max-width: 550px;
+	position: absolute;
+	height: 300px;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto;
+	&-error {
+		border: 1px solid red;
+		color: red;
+		display: flex;
+		justify-content: center;
+		p {
+			margin: 0;
+		}
+	}
+	h4 {
+		margin: 0;
+	}
+	.edit-box {
+		width: 100%;
+		margin: 0;
+	}
+}
